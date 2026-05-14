@@ -1,1 +1,904 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHAPTER Kyiv | Upscale Mediterranean</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Playfair Display for elegance, Outfit for modern interface -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        'chapter-dark': '#1e293b', /* Deep slate blue - richer and softer than black */
+                        'chapter-primary': '#e05d3a', /* Vibrant Mediterranean Terracotta */
+                        'chapter-primary-hover': '#c74d2c',
+                        'chapter-card': '#ffffff',
+                        'chapter-gold': '#eab308', /* Brighter, sunny gold */
+                        'chapter-gold-dim': '#fef08a',
+                        'chapter-bg': '#ffffff', /* Pure bright white */
+                        'chapter-cream': '#fffaf0', /* Very warm, sunny cream */
+                    },
+                    animation: {
+                        'slow-zoom': 'slowZoom 20s ease-in-out infinite alternate',
+                        'fade-in-up': 'fadeInUp 1s ease-out forwards',
+                    },
+                    keyframes: {
+                        slowZoom: {
+                            '0%': { transform: 'scale(1)' },
+                            '100%': { transform: 'scale(1.1)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Light mode scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #fafaf9; }
+        ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #c5a059; }
 
+        /* Light Custom Input Styling for the Reservation Form */
+        .glass-input {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            color: #1e293b;
+            transition: all 0.3s ease;
+        }
+        .glass-input:focus {
+            outline: none;
+            border-color: #e05d3a;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 20px rgba(224, 93, 58, 0.15);
+        }
+        
+        /* Light mode calendar icon for date input */
+        ::-webkit-calendar-picker-indicator {
+            opacity: 0.6;
+            cursor: pointer;
+        }
+        ::-webkit-calendar-picker-indicator:hover {
+            opacity: 1;
+        }
+
+        .chat-window {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(20px) scale(0.95);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .chat-window.active {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .message-slide-in {
+            animation: messageSlideIn 0.3s ease-out forwards;
+        }
+        @keyframes messageSlideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .typing-dot {
+            animation: typingBounce 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typingBounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-chapter-bg text-chapter-dark font-sans antialiased overflow-x-hidden">
+
+    <!-- Navigation (Light Glassmorphism) -->
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-black/5 transition-all duration-300 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="flex justify-between items-center h-24">
+                <div class="flex-shrink-0 font-serif text-3xl tracking-[0.2em] uppercase font-bold text-chapter-dark">
+                    Chapter<span class="text-chapter-gold">.</span>
+                </div>
+                <div class="hidden lg:flex space-x-12 text-xs tracking-[0.15em] uppercase font-medium">
+                    <a href="#about" class="text-gray-500 hover:text-chapter-gold transition duration-300">
+                        <span class="lang-en">The Vision</span><span class="lang-uk hidden">Візія</span>
+                    </a>
+                    <a href="#menu" class="text-gray-500 hover:text-chapter-gold transition duration-300">
+                        <span class="lang-en">Menu</span><span class="lang-uk hidden">Меню</span>
+                    </a>
+                    <a href="#rituals" class="text-gray-500 hover:text-chapter-gold transition duration-300">
+                        <span class="lang-en">Rituals</span><span class="lang-uk hidden">Ритуали</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center gap-6">
+                    <!-- Language Toggle (Enhanced to stand out) -->
+                    <div class="flex items-center gap-3 text-xs font-bold tracking-widest bg-gray-100/80 px-4 py-2.5 rounded-full border border-black/5 mr-2">
+                        <button onclick="setLang('en')" id="btn-en" class="text-gray-400 hover:text-chapter-dark transition">ENG</button>
+                        <span class="text-gray-300">|</span>
+                        <button onclick="setLang('uk')" id="btn-uk" class="text-chapter-dark transition">УКР</button>
+                    </div>
+
+                    <a href="tel:0968662323" class="text-gray-600 hover:text-chapter-primary transition text-sm font-medium">
+                        <i class="fa-solid fa-phone text-chapter-gold mr-2"></i>096 866 2323
+                    </a>
+                    <a href="#reserve" class="bg-chapter-primary text-white px-8 py-3.5 rounded-full text-xs tracking-widest uppercase font-bold hover:bg-chapter-primary-hover transition duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform">
+                        <span class="lang-en">Reserve</span><span class="lang-uk hidden">Резерв</span>
+                    </a>
+                </div>
+                <!-- Mobile Menu Toggle Button -->
+                <button onclick="toggleMobileMenu()" class="lg:hidden text-chapter-dark text-2xl focus:outline-none z-[60] relative">
+                    <i id="mobileMenuIcon" class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenu" class="fixed inset-0 bg-white/95 backdrop-blur-md z-40 transform translate-x-full transition-transform duration-300 lg:hidden flex flex-col pt-28 px-8 pb-8">
+        <div class="flex flex-col gap-6 text-center text-lg tracking-[0.15em] uppercase font-medium">
+            <a href="#about" onclick="toggleMobileMenu()" class="text-chapter-dark hover:text-chapter-gold transition">
+                <span class="lang-en">The Vision</span><span class="lang-uk hidden">Візія</span>
+            </a>
+            <a href="#menu" onclick="toggleMobileMenu()" class="text-chapter-dark hover:text-chapter-gold transition">
+                <span class="lang-en">Menu</span><span class="lang-uk hidden">Меню</span>
+            </a>
+            <a href="#rituals" onclick="toggleMobileMenu()" class="text-chapter-dark hover:text-chapter-gold transition">
+                <span class="lang-en">Rituals</span><span class="lang-uk hidden">Ритуали</span>
+            </a>
+            
+            <div class="w-12 h-[1px] bg-black/10 mx-auto my-4"></div>
+            
+            <!-- Mobile Language Toggle -->
+            <div class="flex justify-center items-center gap-4 text-sm font-bold tracking-widest bg-gray-100/80 px-6 py-3 rounded-full border border-black/5 mx-auto">
+                <button onclick="setLang('en')" id="btn-en-mob" class="text-gray-400 hover:text-chapter-dark transition">ENG</button>
+                <span class="text-gray-300">|</span>
+                <button onclick="setLang('uk')" id="btn-uk-mob" class="text-chapter-dark transition">УКР</button>
+            </div>
+
+            <a href="tel:0968662323" class="text-chapter-dark mt-4">
+                <i class="fa-solid fa-phone text-chapter-gold mr-2"></i>096 866 2323
+            </a>
+            <a href="#reserve" onclick="toggleMobileMenu()" class="bg-chapter-primary text-white px-8 py-4 rounded-full text-sm tracking-widest uppercase font-bold shadow-lg mt-2 mx-auto inline-block">
+                <span class="lang-en">Reserve a Table</span><span class="lang-uk hidden">Забронювати стіл</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Hero Section with Bright Gradient Overlay -->
+    <section class="relative h-screen min-h-[800px] w-full overflow-hidden flex items-center">
+        <!-- Animated Background Image -->
+        <div class="absolute inset-0 z-0">
+            <!-- Vibrant, bright, sunny Mediterranean food image -->
+            <img src="https://images.unsplash.com/photo-1498654896293-37aacf113fd9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="CHAPTER Kyiv Vibrant Cuisine" class="w-full h-full object-cover animate-slow-zoom brightness-105">
+        </div>
+        
+        <!-- Bright Gradient Overlay for text readability (Warm and light) -->
+        <div class="absolute inset-0 z-10 bg-gradient-to-r from-white/95 via-white/80 to-white/10"></div>
+
+        <div class="relative z-20 w-full max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mt-16">
+            
+            <!-- Left Typography (Dark text on light overlay) -->
+            <div class="lg:col-span-7 space-y-6 animate-fade-in-up">
+                <div class="flex items-center gap-4">
+                    <div class="h-[1px] w-12 bg-chapter-gold"></div>
+                    <p class="text-chapter-gold uppercase tracking-[0.3em] text-xs font-bold">
+                        <span class="lang-en">Podil, Kyiv</span><span class="lang-uk hidden">Поділ, Київ</span>
+                    </p>
+                </div>
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif text-chapter-dark leading-[1.1]">
+                    <span class="lang-en">Food is an art.<br><span class="italic font-light text-gray-500">Not a metaphor.</span></span>
+                    <span class="lang-uk hidden">Їжа — це мистецтво.<br><span class="italic font-light text-gray-500">Не метафора.</span></span>
+                </h1>
+                <p class="text-base md:text-lg text-gray-600 font-light max-w-lg leading-relaxed pt-4">
+                    <span class="lang-en">Mediterranean cuisine where you come for the taste and stay for the impressions. Experience the perfect texture, where creaminess is a feeling, not an ingredient.</span>
+                    <span class="lang-uk hidden">Середземноморська кухня, куди приходять за смаком, а залишаються заради вражень. Відчуйте ідеальну текстуру, де вершковість — це відчуття, а не інгредієнт.</span>
+                </p>
+                <div class="pt-8">
+                    <div class="flex items-center gap-4 text-sm text-gray-500 font-medium">
+                        <i class="fa-solid fa-star text-chapter-gold text-xs"></i>
+                        <i class="fa-solid fa-star text-chapter-gold text-xs"></i>
+                        <i class="fa-solid fa-star text-chapter-gold text-xs"></i>
+                        <i class="fa-solid fa-star text-chapter-gold text-xs"></i>
+                        <i class="fa-solid fa-star-half-stroke text-chapter-gold text-xs"></i>
+                        <span class="tracking-wider ml-2">4.7 / 1,060 <span class="lang-en">REVIEWS</span><span class="lang-uk hidden">ВІДГУКІВ</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Light Glassmorphism Reservation Widget -->
+            <div id="reserve" class="lg:col-span-5 w-full max-w-md mx-auto lg:ml-auto animate-fade-in-up" style="animation-delay: 0.2s;">
+                <div class="backdrop-blur-xl bg-white/70 border border-white/60 rounded-3xl p-8 shadow-[0_8px_32px_rgba(0,0,0,0.08)] relative overflow-hidden group">
+                    <!-- Subtle warm glow -->
+                    <div class="absolute -inset-2 bg-gradient-to-r from-chapter-gold/10 to-transparent blur-2xl opacity-0 group-hover:opacity-100 transition duration-700 pointer-events-none"></div>
+                    
+                    <div class="relative z-10">
+                        <h2 class="text-2xl font-serif text-chapter-dark mb-2">
+                            <span class="lang-en">Book a Table</span><span class="lang-uk hidden">Забронювати стіл</span>
+                        </h2>
+                        <p class="text-gray-500 text-sm mb-8 font-light">
+                            <span class="lang-en">Secure your spot at CHAPTER Kyiv.</span><span class="lang-uk hidden">Забезпечте собі місце в CHAPTER Kyiv.</span>
+                        </p>
+                        
+                        <form class="space-y-5">
+                            <!-- Date & Time Row -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 ml-1">
+                                        <span class="lang-en">Date</span><span class="lang-uk hidden">Дата</span>
+                                    </label>
+                                    <input type="date" class="glass-input w-full px-4 py-3 rounded-xl text-sm appearance-none cursor-pointer" required>
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 ml-1">
+                                        <span class="lang-en">Time</span><span class="lang-uk hidden">Час</span>
+                                    </label>
+                                    <select class="glass-input w-full px-4 py-3 rounded-xl text-sm appearance-none cursor-pointer" required>
+                                        <option value="" disabled selected>Select / Обрати</option>
+                                        <option value="10:00">10:00</option>
+                                        <option value="12:00">12:00</option>
+                                        <option value="14:00">14:00</option>
+                                        <option value="18:00">18:00</option>
+                                        <option value="20:00">20:00</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Guest Count -->
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 ml-1">
+                                    <span class="lang-en">Guests</span><span class="lang-uk hidden">Гості</span>
+                                </label>
+                                <select class="glass-input w-full px-4 py-3 rounded-xl text-sm appearance-none cursor-pointer" required>
+                                    <option value="" disabled selected>Guests / Кількість осіб</option>
+                                    <option value="1">1 Person / 1 Особа</option>
+                                    <option value="2">2 People / 2 Особи</option>
+                                    <option value="3">3 People / 3 Особи</option>
+                                    <option value="4">4 People / 4 Особи</option>
+                                    <option value="5+">5+ Call us / Зателефонуйте</option>
+                                </select>
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold uppercase tracking-widest text-gray-500 ml-1">
+                                    <span class="lang-en">Phone Number</span><span class="lang-uk hidden">Номер телефону</span>
+                                </label>
+                                <input type="tel" placeholder="+380" class="glass-input w-full px-4 py-3 rounded-xl text-sm placeholder-gray-400" required>
+                            </div>
+
+                            <button type="button" class="w-full mt-6 bg-chapter-primary text-white font-bold uppercase tracking-widest text-sm py-4 rounded-xl shadow-[0_8px_20px_rgba(224,93,58,0.25)] hover:bg-chapter-primary-hover hover:shadow-[0_12px_25px_rgba(224,93,58,0.35)] transition-all duration-300 transform hover:-translate-y-1">
+                                <span class="lang-en">Confirm Reservation</span><span class="lang-uk hidden">Підтвердити бронювання</span>
+                            </button>
+                        </form>
+                        <p class="text-[10px] text-center text-gray-500 mt-4 uppercase tracking-widest font-medium">
+                            <span class="lang-en">Average spend 600–1 800 ₴</span><span class="lang-uk hidden">Середній чек 600–1 800 ₴</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visual Menu Highlight Section (Bright Background) -->
+    <section id="menu" class="py-32 bg-white relative border-y border-black/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                <!-- Image side -->
+                <div class="relative group">
+                    <div class="absolute -inset-4 bg-chapter-primary/20 blur-3xl opacity-0 group-hover:opacity-100 transition duration-1000 rounded-full"></div>
+                    <img src="https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Vibrant Gourmet Dish" class="relative z-10 w-full h-[600px] object-cover rounded-3xl shadow-[0_20px_50px_rgba(224,93,58,0.15)] transition duration-700 hover:scale-[1.02]">
+                    
+                    <!-- Floating badge -->
+                    <div class="absolute -bottom-8 -right-8 bg-white border border-chapter-primary/10 p-6 rounded-2xl shadow-xl z-20 max-w-xs hidden md:block">
+                        <i class="fa-solid fa-quote-left text-chapter-primary text-2xl mb-2 opacity-80"></i>
+                        <p class="text-sm text-gray-600 italic">
+                            <span class="lang-en">"The Salmon Wellington and Syrniki are unmatched. Large portions and incredible coziness."</span>
+                            <span class="lang-uk hidden">"Лосось Веллінгтон та Сирники просто неперевершені. Великі порції та неймовірний затишок."</span>
+                        </p>
+                        <p class="text-xs text-chapter-primary uppercase tracking-wider mt-3 font-bold">— Yana, Google Review</p>
+                    </div>
+                </div>
+
+                <!-- Menu Content Side -->
+                <div>
+                    <h2 class="text-5xl font-serif text-chapter-dark mb-2">
+                        <span class="lang-en">Curated<br><span class="italic font-light text-chapter-gold">Selections</span></span>
+                        <span class="lang-uk hidden">Вибрані<br><span class="italic font-light text-chapter-gold">Страви</span></span>
+                    </h2>
+                    <p class="text-gray-500 font-light mb-12 mt-6 leading-relaxed">
+                        <span class="lang-en">Agnolotti is about taste without excess. Thin dough, rich filling, perfect balance. One bite — and you are already here.</span>
+                        <span class="lang-uk hidden">Аньолотті — це про смак без зайвого. Тонке тісто, насичена начинка, ідеальний баланс. Один укус — і ви вже тут.</span>
+                    </p>
+                    
+                    <div class="space-y-8">
+                        <!-- Menu Item 1 -->
+                        <div class="group cursor-pointer">
+                            <div class="flex justify-between items-baseline border-b border-black/10 pb-2 mb-2 group-hover:border-chapter-primary transition">
+                                <h4 class="font-serif text-xl text-chapter-dark group-hover:text-chapter-primary transition">
+                                    <span class="lang-en">Pumpkin Soup</span><span class="lang-uk hidden">Гарбузовий Суп</span>
+                                </h4>
+                                <span class="text-sm font-medium text-gray-400">
+                                    <span class="lang-en">Seasonal</span><span class="lang-uk hidden">Сезонне</span>
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-500 font-light pr-12">
+                                <span class="lang-en">Warm, cozy, and vibrant flavors.</span><span class="lang-uk hidden">Теплі, затишні та яскраві смаки.</span>
+                            </p>
+                        </div>
+                        
+                        <!-- Menu Item 2 -->
+                        <div class="group cursor-pointer">
+                            <div class="flex justify-between items-baseline border-b border-black/10 pb-2 mb-2 group-hover:border-chapter-primary transition">
+                                <h4 class="font-serif text-xl text-chapter-dark group-hover:text-chapter-primary transition">
+                                    <span class="lang-en">Salmon Wellington</span><span class="lang-uk hidden">Лосось Веллінгтон</span>
+                                </h4>
+                                <span class="text-sm font-medium text-gray-400">
+                                    <span class="lang-en">Signature</span><span class="lang-uk hidden">Фірмове</span>
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-500 font-light pr-12">
+                                <span class="lang-en">A guest favorite, perfectly baked with elegant presentation.</span><span class="lang-uk hidden">Улюбленець гостей, ідеально запечений з елегантною подачею.</span>
+                            </p>
+                        </div>
+
+                        <!-- Menu Item 3 -->
+                        <div class="group cursor-pointer">
+                            <div class="flex justify-between items-baseline border-b border-black/10 pb-2 mb-2 group-hover:border-chapter-primary transition">
+                                <h4 class="font-serif text-xl text-chapter-dark group-hover:text-chapter-primary transition">
+                                    <span class="lang-en">Eggplant with Shrimp</span><span class="lang-uk hidden">Баклажан з Креветками</span>
+                                </h4>
+                                <span class="text-sm font-medium text-gray-400">
+                                    <span class="lang-en">Popular</span><span class="lang-uk hidden">Популярне</span>
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-500 font-light pr-12">
+                                <span class="lang-en">A delicate balance of textures and rich Mediterranean flavors.</span><span class="lang-uk hidden">Делікатний баланс текстур та насичених середземноморських смаків.</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <a href="https://expz.menu" target="_blank" class="inline-flex items-center gap-3 mt-12 text-xs uppercase tracking-widest font-bold text-chapter-primary hover:text-chapter-primary-hover transition group bg-chapter-primary/5 px-6 py-3 rounded-full">
+                        <span class="lang-en">Explore Full Menu</span><span class="lang-uk hidden">Переглянути повне меню</span>
+                        <i class="fa-solid fa-arrow-right transform group-hover:translate-x-2 transition"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rituals Section (Light Cards) -->
+    <section id="rituals" class="py-32 bg-chapter-cream">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl md:text-5xl font-serif text-chapter-dark mb-6">
+                    <span class="lang-en">Our Rituals</span><span class="lang-uk hidden">Наші Ритуали</span>
+                </h2>
+                <p class="text-gray-500 max-w-2xl mx-auto font-light">
+                    <span class="lang-en">Experience the rhythm of CHAPTER. From slow mornings to elegant evenings, we have crafted specific moments for you to enjoy.</span>
+                    <span class="lang-uk hidden">Відчуйте ритм CHAPTER. Від повільних ранків до елегантних вечорів, ми створили особливі моменти для вашої насолоди.</span>
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-white border border-chapter-primary/5 p-10 rounded-3xl shadow-sm hover:shadow-[0_15px_40px_rgba(224,93,58,0.1)] hover:border-chapter-primary/20 transition duration-500 group text-center md:text-left">
+                    <div class="w-16 h-16 rounded-full bg-chapter-cream flex items-center justify-center mb-6 group-hover:bg-chapter-primary/10 transition duration-500 mx-auto md:mx-0">
+                        <i class="fa-solid fa-mug-hot text-2xl text-chapter-primary"></i>
+                    </div>
+                    <h3 class="text-2xl font-serif text-chapter-dark mb-4">
+                        <span class="lang-en">Slow Mornings</span><span class="lang-uk hidden">Повільні ранки</span>
+                    </h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed mb-6">
+                        <span class="lang-en">Breakfasts at CHAPTER are about a good mood and care from the first minute. Served every day until 12:00.</span>
+                        <span class="lang-uk hidden">Сніданки в CHAPTER — це про гарний настрій та турботу з першої хвилини. Подаємо щодня до 12:00.</span>
+                    </p>
+                    <p class="text-[10px] font-bold text-chapter-primary uppercase tracking-widest">
+                        <span class="lang-en">Coffee & Comfort</span><span class="lang-uk hidden">Кава та Затишок</span>
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white border border-chapter-primary/5 p-10 rounded-3xl shadow-sm hover:shadow-[0_15px_40px_rgba(224,93,58,0.1)] hover:border-chapter-primary/20 transition duration-500 group text-center md:text-left transform md:-translate-y-4">
+                    <div class="w-16 h-16 rounded-full bg-chapter-cream flex items-center justify-center mb-6 group-hover:bg-chapter-primary/10 transition duration-500 mx-auto md:mx-0">
+                        <i class="fa-solid fa-wine-glass text-2xl text-chapter-primary"></i>
+                    </div>
+                    <h3 class="text-2xl font-serif text-chapter-dark mb-4">
+                        <span class="lang-en">Monday Pasta Ritual</span><span class="lang-uk hidden">Ритуал Пасти</span>
+                    </h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed mb-6">
+                        <span class="lang-en">Choose your favorite pasta, and we complement it with a glass of white wine. A touch of Italy to start your week.</span>
+                        <span class="lang-uk hidden">Обирайте улюблену пасту, а ми доповнимо її келихом білого вина. Шматочок Італії для початку вашого тижня.</span>
+                    </p>
+                    <p class="text-[10px] font-bold text-chapter-primary uppercase tracking-widest">
+                        <span class="lang-en">Every Monday</span><span class="lang-uk hidden">Щопонеділка</span>
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white border border-chapter-primary/5 p-10 rounded-3xl shadow-sm hover:shadow-[0_15px_40px_rgba(224,93,58,0.1)] hover:border-chapter-primary/20 transition duration-500 group text-center md:text-left">
+                    <div class="w-16 h-16 rounded-full bg-chapter-cream flex items-center justify-center mb-6 group-hover:bg-chapter-primary/10 transition duration-500 mx-auto md:mx-0">
+                        <i class="fa-solid fa-utensils text-2xl text-chapter-primary"></i>
+                    </div>
+                    <h3 class="text-2xl font-serif text-chapter-dark mb-4">
+                        <span class="lang-en">The Set Menu</span><span class="lang-uk hidden">Сет-меню</span>
+                    </h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed mb-6">
+                        <span class="lang-en">A lunch in Kyiv that is hard to compare. Not just a business lunch, but a complete, curated gastronomic experience.</span>
+                        <span class="lang-uk hidden">Обід у Києві, який важко з чимось порівняти. Не просто бізнес-ланч, а повноцінний гастрономічний досвід.</span>
+                    </p>
+                    <p class="text-[10px] font-bold text-chapter-primary uppercase tracking-widest">
+                        <span class="lang-en">Elevated Dining</span><span class="lang-uk hidden">Висока кухня</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Light Footer -->
+    <footer class="bg-white pt-24 pb-12 border-t border-black/5 relative overflow-hidden">
+        <!-- Abstract background element -->
+        <div class="absolute -top-40 -right-40 w-96 h-96 bg-chapter-gold/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-8 mb-16">
+                
+                <!-- Brand -->
+                <div class="col-span-1 md:col-span-2">
+                    <div class="font-serif text-3xl tracking-[0.2em] uppercase font-bold text-chapter-dark mb-6">
+                        Chapter<span class="text-chapter-gold">.</span>
+                    </div>
+                    <p class="text-gray-500 font-light text-sm max-w-sm mb-8 leading-relaxed">
+                        <span class="lang-en">A place where exquisite Mediterranean flavors meet unparalleled coziness in the heart of Podil.</span>
+                        <span class="lang-uk hidden">Місце, де вишукані середземноморські смаки зустрічаються з неперевершеним затишком у серці Подолу.</span>
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="https://instagram.com/chapter.kyiv" target="_blank" class="w-10 h-10 rounded-full border border-black/10 flex items-center justify-center text-gray-500 hover:text-chapter-gold hover:border-chapter-gold transition bg-chapter-bg">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full border border-black/10 flex items-center justify-center text-gray-500 hover:text-chapter-gold hover:border-chapter-gold transition bg-chapter-bg">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hours -->
+                <div>
+                    <h4 class="text-chapter-dark text-xs uppercase tracking-[0.2em] font-bold mb-6">
+                        <span class="lang-en">Hours</span><span class="lang-uk hidden">Години</span>
+                    </h4>
+                    <ul class="text-gray-500 font-light text-sm space-y-4">
+                        <li class="flex justify-between border-b border-black/5 pb-2">
+                            <span><span class="lang-en">Mon - Sun</span><span class="lang-uk hidden">Пн - Нд</span></span> 
+                            <span class="text-chapter-dark font-medium">10:00 — 22:00</span>
+                        </li>
+                        <li class="flex justify-between border-b border-black/5 pb-2">
+                            <span><span class="lang-en">Breakfasts</span><span class="lang-uk hidden">Сніданки</span></span> 
+                            <span class="text-chapter-dark font-medium"><span class="lang-en">Until 12:00</span><span class="lang-uk hidden">До 12:00</span></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-chapter-dark text-xs uppercase tracking-[0.2em] font-bold mb-6">
+                        <span class="lang-en">Location</span><span class="lang-uk hidden">Локація</span>
+                    </h4>
+                    <p class="text-gray-500 font-light text-sm mb-2">
+                        <span class="lang-en">Verkhnii Val St, 10</span><span class="lang-uk hidden">вул. Верхній Вал, 10</span>
+                    </p>
+                    <p class="text-gray-500 font-light text-sm mb-6">
+                        <span class="lang-en">Kyiv, 04071</span><span class="lang-uk hidden">Київ, 04071</span>
+                    </p>
+                    <a href="tel:0968662323" class="text-lg text-chapter-gold font-serif hover:text-chapter-dark transition font-bold">096 866 2323</a>
+                </div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row justify-between items-center border-t border-black/10 pt-8 mt-8 text-xs text-gray-400 tracking-wider">
+                <p>&copy; 2026 CHAPTER Kyiv. <span class="lang-en">All rights reserved.</span><span class="lang-uk hidden">Всі права захищені.</span></p>
+                <div class="flex gap-6 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-chapter-dark transition">
+                        <span class="lang-en">Privacy Policy</span><span class="lang-uk hidden">Політика конфіденційності</span>
+                    </a>
+                    <a href="#" class="hover:text-chapter-dark transition">
+                        <span class="lang-en">Terms of Service</span><span class="lang-uk hidden">Умови використання</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Light AI Sommelier Widget -->
+    <div class="fixed bottom-6 right-6 z-[60] flex flex-col items-end">
+        
+        <!-- Chat Window (Light theme) -->
+        <div id="aiChatWindow" class="chat-window mb-4 w-[380px] max-w-[calc(100vw-3rem)] backdrop-blur-2xl bg-white/95 border border-black/10 rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col">
+            
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-chapter-bg to-white px-6 py-5 border-b border-black/5 flex justify-between items-center relative overflow-hidden">
+                <div class="absolute -inset-2 bg-gradient-to-r from-chapter-gold/5 to-transparent blur-xl pointer-events-none"></div>
+                <div class="flex items-center gap-4 relative z-10">
+                    <div class="w-10 h-10 rounded-full border border-chapter-gold/30 bg-chapter-gold/10 flex items-center justify-center text-chapter-gold">
+                        <i class="fa-solid fa-wine-glass"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-chapter-dark font-serif text-base leading-tight font-bold">
+                            <span class="lang-en">CHAPTER Concierge</span><span class="lang-uk hidden">CHAPTER Консьєрж</span>
+                        </h4>
+                        <p class="text-chapter-gold text-[10px] uppercase tracking-widest mt-0.5 font-bold">
+                            <span class="lang-en">AI Sommelier</span><span class="lang-uk hidden">AI Сомельє</span>
+                        </p>
+                    </div>
+                </div>
+                <button onclick="toggleChat()" class="w-8 h-8 flex items-center justify-center rounded-full bg-black/5 hover:bg-black/10 text-gray-500 hover:text-chapter-dark transition relative z-10">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <!-- Messages Area -->
+            <div id="chatMessages" class="p-6 h-80 overflow-y-auto flex flex-col gap-4 text-sm font-light scroll-smooth bg-[#fdfdfc]">
+            </div>
+
+            <!-- Input Area -->
+            <div class="p-4 bg-white border-t border-black/5">
+                <form id="chatForm" class="flex items-center gap-3" onsubmit="handleChatSubmit(event)">
+                    <input type="text" id="chatInput" placeholder="Ask about our dishes..." class="glass-input flex-1 px-5 py-3.5 rounded-2xl text-sm transition-all placeholder-gray-400 bg-chapter-bg" autocomplete="off">
+                    <button type="submit" class="w-12 h-12 flex-shrink-0 rounded-2xl bg-chapter-primary text-white flex items-center justify-center hover:bg-chapter-primary-hover hover:shadow-[0_4px_15px_rgba(224,93,58,0.4)] transition-all duration-300 transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Floating Toggle Button -->
+        <button onclick="toggleChat()" class="w-16 h-16 rounded-full bg-chapter-primary text-white flex items-center justify-center text-2xl hover:scale-105 hover:bg-chapter-primary-hover transition-all duration-300 shadow-[0_8px_25px_rgba(224,93,58,0.4)] hover:shadow-[0_12px_35px_rgba(224,93,58,0.5)] group border-4 border-white">
+            <i class="fa-solid fa-sparkles group-hover:rotate-12 transition-transform duration-300"></i>
+        </button>
+    </div>
+
+    <script>
+        const chatWindow = document.getElementById('aiChatWindow');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        
+        let isChatOpen = false;
+        let conversationHistory = [];
+        let currentLang = 'uk'; // Default to Ukrainian
+        let hasUserChatted = false; // Track if the user has interacted with the AI
+        let isMobileMenuOpen = false;
+
+        // --- Mobile Menu Logic ---
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('mobileMenuIcon');
+            isMobileMenuOpen = !isMobileMenuOpen;
+            
+            if (isMobileMenuOpen) {
+                menu.classList.remove('translate-x-full');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            } else {
+                menu.classList.add('translate-x-full');
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+                document.body.style.overflow = 'auto'; // Restore background scrolling
+            }
+        }
+
+        // --- Language Toggle Logic ---
+        function setLang(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang;
+
+            // Update Navigation active states
+            const btnEn = document.getElementById('btn-en');
+            const btnUk = document.getElementById('btn-uk');
+            const btnEnMob = document.getElementById('btn-en-mob');
+            const btnUkMob = document.getElementById('btn-uk-mob');
+
+            if (btnEn && btnUk) {
+                btnEn.className = lang === 'en' ? 'text-chapter-dark font-bold transition' : 'text-gray-400 hover:text-chapter-dark transition';
+                btnUk.className = lang === 'uk' ? 'text-chapter-dark font-bold transition' : 'text-gray-400 hover:text-chapter-dark transition';
+            }
+            if (btnEnMob && btnUkMob) {
+                btnEnMob.className = lang === 'en' ? 'text-chapter-dark font-bold transition' : 'text-gray-400 hover:text-chapter-dark transition';
+                btnUkMob.className = lang === 'uk' ? 'text-chapter-dark font-bold transition' : 'text-gray-400 hover:text-chapter-dark transition';
+            }
+
+            // Toggle element visibility 
+            document.querySelectorAll('.lang-en').forEach(el => {
+                if (lang === 'en') el.classList.remove('hidden');
+                else el.classList.add('hidden');
+            });
+            document.querySelectorAll('.lang-uk').forEach(el => {
+                if (lang === 'uk') el.classList.remove('hidden');
+                else el.classList.add('hidden');
+            });
+
+            // Update chat placeholder
+            if (chatInput) {
+                chatInput.placeholder = lang === 'en' ? 'Ask about our dishes...' : 'Запитайте про наші страви...';
+            }
+
+            // Update initial greeting dynamically if the user hasn't started a conversation yet
+            if (!hasUserChatted && chatMessages) {
+                chatMessages.innerHTML = ''; // Clear chat UI
+                conversationHistory = []; // Reset memory
+                
+                const initialGreeting = lang === 'en' 
+                    ? "Good afternoon. I am the CHAPTER Concierge. How may I assist you with our menu, wine pairings, or reservations today?"
+                    : "Доброго дня. Я Консьєрж CHAPTER. Як я можу допомогти вам з нашим меню, винними парами або бронюванням сьогодні?";
+                
+                conversationHistory.push({ role: "model", parts: [{ text: initialGreeting }] });
+                appendMessage(initialGreeting, false);
+            }
+        }
+
+        // --- TTS & Audio Logic ---
+        // Convert base64 from Gemini TTS API to ArrayBuffer
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Convert raw PCM audio to playable WAV format
+        function pcmToWav(pcmData, sampleRate) {
+            const numChannels = 1;
+            const bitsPerSample = 16;
+            const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
+            const blockAlign = numChannels * (bitsPerSample / 8);
+            const dataSize = pcmData.length * 2;
+            const buffer = new ArrayBuffer(44 + dataSize);
+            const view = new DataView(buffer);
+
+            const writeString = (view, offset, string) => {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            };
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + dataSize, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, byteRate, true);
+            view.setUint16(32, blockAlign, true);
+            view.setUint16(34, bitsPerSample, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, dataSize, true);
+
+            let offset = 44;
+            for (let i = 0; i < pcmData.length; i++) {
+                view.setInt16(offset, pcmData[i], true);
+                offset += 2;
+            }
+
+            return new Blob([buffer], { type: 'audio/wav' });
+        }
+
+        async function playSommelierVoice(text, btnElement) {
+            const originalHTML = btnElement.innerHTML;
+            const loadingText = currentLang === 'en' ? 'Loading...' : 'Завантаження...';
+            btnElement.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span class="text-[10px] uppercase tracking-wider">${loadingText}</span>`;
+            btnElement.disabled = true;
+
+            const apiKey = ""; // API Key injected by environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+            // Clean text for speech
+            const cleanText = text.replace(/\*/g, '');
+
+            const payload = {
+                contents: [{ parts: [{ text: cleanText }] }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: { prebuiltVoiceConfig: { voiceName: "Algieba" } }
+                    }
+                },
+                model: "gemini-2.5-flash-preview-tts"
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                const part = result?.candidates?.[0]?.content?.parts?.[0];
+                const audioData = part?.inlineData?.data;
+                const mimeType = part?.inlineData?.mimeType;
+
+                if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                    const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+                    const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 24000;
+                    
+                    const pcmData = base64ToArrayBuffer(audioData);
+                    const pcm16 = new Int16Array(pcmData);
+                    const wavBlob = pcmToWav(pcm16, sampleRate);
+                    const audioUrl = URL.createObjectURL(wavBlob);
+                    
+                    const audio = new Audio(audioUrl);
+                    
+                    const playingText = currentLang === 'en' ? 'Playing...' : 'Відтворення...';
+                    btnElement.innerHTML = `<i class="fa-solid fa-volume-up text-chapter-gold"></i> <span class="text-[10px] uppercase tracking-wider text-chapter-gold">${playingText}</span>`;
+                    
+                    audio.onended = () => {
+                        btnElement.innerHTML = originalHTML;
+                        btnElement.disabled = false;
+                        URL.revokeObjectURL(audioUrl);
+                    };
+                    audio.play();
+                } else {
+                    throw new Error("No audio data returned");
+                }
+            } catch (err) {
+                console.error("TTS Error:", err);
+                const errorText = currentLang === 'en' ? 'Error' : 'Помилка';
+                btnElement.innerHTML = `<i class="fa-solid fa-circle-exclamation text-red-500"></i> <span class="text-[10px] uppercase tracking-wider text-red-500">${errorText}</span>`;
+                setTimeout(() => {
+                    btnElement.innerHTML = originalHTML;
+                    btnElement.disabled = false;
+                }, 3000);
+            }
+        }
+
+        // --- Chat UI Logic ---
+        function toggleChat() {
+            isChatOpen = !isChatOpen;
+            if (isChatOpen) {
+                chatWindow.classList.add('active');
+                setTimeout(() => chatInput.focus(), 300);
+            } else {
+                chatWindow.classList.remove('active');
+            }
+        }
+
+        function appendMessage(text, isUser = false) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message-slide-in rounded-2xl p-4 max-w-[85%] leading-relaxed shadow-sm ${
+                isUser 
+                ? 'bg-chapter-primary text-white font-medium rounded-tr-sm self-end' 
+                : 'bg-white border border-black/5 text-gray-700 rounded-tl-sm self-start'
+            }`;
+            
+            let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong class="text-chapter-dark">$1</strong>');
+            formattedText = formattedText.replace(/\n/g, '<br>');
+            
+            if (!isUser) {
+                const ttsBtnId = 'tts-btn-' + Math.random().toString(36).substr(2, 9);
+                const listenText = currentLang === 'en' ? 'Listen' : 'Слухати';
+                msgDiv.innerHTML = `
+                    <div class="flex flex-col gap-3">
+                        <div>${formattedText}</div>
+                        <div class="border-t border-black/5 pt-2 flex justify-end">
+                            <button id="${ttsBtnId}" class="text-gray-400 hover:text-chapter-primary transition-colors flex items-center gap-1.5" title="${listenText}">
+                                <i class="fa-solid fa-volume-high"></i> <span class="text-[10px] uppercase tracking-widest font-bold">${listenText}</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                chatMessages.appendChild(msgDiv);
+                
+                setTimeout(() => {
+                    const btn = document.getElementById(ttsBtnId);
+                    if(btn) {
+                        btn.addEventListener('click', function() {
+                            playSommelierVoice(text, this);
+                        });
+                    }
+                }, 0);
+            } else {
+                msgDiv.innerHTML = formattedText;
+                chatMessages.appendChild(msgDiv);
+            }
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function appendLoading() {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = 'chatLoading';
+            loadingDiv.className = 'message-slide-in bg-white border border-black/5 rounded-2xl rounded-tl-sm p-5 max-w-[85%] self-start flex gap-1.5 items-center shadow-sm';
+            loadingDiv.innerHTML = `
+                <div class="w-1.5 h-1.5 rounded-full bg-chapter-primary typing-dot"></div>
+                <div class="w-1.5 h-1.5 rounded-full bg-chapter-primary typing-dot"></div>
+                <div class="w-1.5 h-1.5 rounded-full bg-chapter-primary typing-dot"></div>
+            `;
+            chatMessages.appendChild(loadingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeLoading() {
+            const loading = document.getElementById('chatLoading');
+            if (loading) loading.remove();
+        }
+
+        async function handleChatSubmit(e) {
+            e.preventDefault();
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            hasUserChatted = true; // Mark that the user has started chatting
+            appendMessage(text, true);
+            chatInput.value = '';
+            
+            conversationHistory.push({ role: "user", parts: [{ text: text }] });
+            appendLoading();
+
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            
+            // System prompt dynamically updates language rule based on user UI selection
+            const systemPrompt = `You are the elegant AI Sommelier & Culinary Concierge for CHAPTER Kyiv, an upscale Mediterranean restaurant in Podil, Kyiv.
+            Your tone is sophisticated, welcoming, and knowledgeable.
+            Suggest exquisite wine pairings or cocktails for dishes.
+            Keep answers concise, strictly within 1-2 short paragraphs. 
+            Do not use complex markdown, just basic text and occasional **bolding**.
+            Never invent menu items not listed. Average spend is 600-1800 UAH.
+            IMPORTANT: You must always respond in ${currentLang === 'en' ? 'English' : 'Ukrainian'}.`;
+
+            const payload = {
+                contents: conversationHistory,
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                removeLoading();
+
+                if (result.candidates && result.candidates.length > 0) {
+                    const aiText = result.candidates[0].content.parts[0].text;
+                    conversationHistory.push({ role: "model", parts: [{ text: aiText }] });
+                    appendMessage(aiText, false);
+                } else {
+                    appendMessage(currentLang === 'en' ? "I apologize, but I am having trouble accessing the cellar at the moment. Please try again." : "Перепрошую, зараз у мене виникли труднощі з доступом до винного погребу. Спробуйте ще раз.", false);
+                }
+            } catch (error) {
+                console.error('Gemini API Error:', error);
+                removeLoading();
+                conversationHistory.pop();
+                appendMessage(currentLang === 'en' ? "I apologize, my connection to the kitchen was momentarily interrupted. Could you please repeat that?" : "Перепрошую, мій зв'язок з кухнею тимчасово перервався. Чи не могли б ви повторити?", false);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Initialize language to Ukrainian on load
+            setLang('uk');
+        });
+    </script>
+</body>
+</html>
